@@ -127,6 +127,7 @@ const ExamInterface = () => {
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const [showTabWarning, setShowTabWarning] = useState(false);
   const [lastWarningTime, setLastWarningTime] = useState(0);
+  
     const handleAnswerSelect = (optionIndex) => {
       setAnswers((prev) => {
         const newAnswers = {
@@ -355,6 +356,47 @@ const ExamInterface = () => {
     examStarted,
   ]);
 
+useEffect(() => {
+  if (!examStarted) return;
+
+  // Disable right-click
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+  };
+
+  // Disable copy, cut, paste
+  const handleCopyCutPaste = (e) => {
+    e.preventDefault();
+  };
+
+  // Disable text selection
+  const handleSelectStart = (e) => {
+    e.preventDefault();
+  };
+
+  // Optional: Disable Ctrl+C, Ctrl+V
+  const handleKeyDown = (e) => {
+    if (e.ctrlKey && ["c", "x", "v"].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+    }
+  };
+
+  document.addEventListener("contextmenu", handleContextMenu);
+  document.addEventListener("copy", handleCopyCutPaste);
+  document.addEventListener("cut", handleCopyCutPaste);
+  document.addEventListener("paste", handleCopyCutPaste);
+  document.addEventListener("selectstart", handleSelectStart);
+  document.addEventListener("keydown", handleKeyDown);
+
+  return () => {
+    document.removeEventListener("contextmenu", handleContextMenu);
+    document.removeEventListener("copy", handleCopyCutPaste);
+    document.removeEventListener("cut", handleCopyCutPaste);
+    document.removeEventListener("paste", handleCopyCutPaste);
+    document.removeEventListener("selectstart", handleSelectStart);
+    document.removeEventListener("keydown", handleKeyDown);
+  };
+}, [examStarted]);
 
 
   if (!examStarted) {
